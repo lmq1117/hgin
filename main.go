@@ -1,40 +1,57 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/thinkerou/favicon"
+	"fmt"
+	"path/filepath"
+
+	"mime/multipart"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
+type BindFile struct {
+	Name  string                `form:"name" binding:"required"`
+	Email string                `form:"email" binding:"required"`
+	File  *multipart.FileHeader `form:"file" binding:"required"`
+}
+
 func main() {
-	r := gin.Default()
-	r.Use(favicon.New("./favicon.ico"))
-	r.LoadHTMLGlob("views/**/*")
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	//currentPath, _ := os.Getwd()
+	router := gin.Default()
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 
-	r.GET("/some/json", func(c *gin.Context) {
-		data := map[string]interface{}{
-			"lang": "Go语言",
-			"tag":  "<br>",
-		}
-		c.AsciiJSON(http.StatusOK, data)
-	})
-
-	r.GET("/demo/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "html demo ~~~~~~~~~~~~~~~",
-		})
-	})
-
-	r.GET("/index", func(c *gin.Context) {
+	router.Static("/file", "./public")
+	router.LoadHTMLGlob("views/*")
+	router.GET("/upload", func(c *gin.Context) {
+		//fmt.Println(8 << 20)
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "html demo ~~~~~~~~~~~~~~~",
+			//"title": "html demo ~~~~~~~~~~~~~~~",
 		})
 	})
 
-	r.Run(":8080")
+	router.POST("/upload", func(c *gin.Context) {
+		var bindFile BindFile
+
+		// Bind file
+		if err := c.ShouldBind(&bindFile); err != nil {
+			c.String(http.StatusBadRequest, fmt.Sprintf("err: %s", err.Error()))
+			return
+		}
+
+		// Save uploaded file
+		file := bindFile.File
+		dst := filepath.Base(file.Filename)
+		//fmt.Println(file.Filename)
+		//fmt.Println(dst)
+		//fmt.Println(filepath.Dir(file.Filename))
+		if err := c.SaveUploadedFile(file, "public/"+dst); err != nil {
+			c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+			return
+		}
+
+		c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, bindFile.Name, bindFile.Email))
+	})
+	router.Run(":8080")
 }
