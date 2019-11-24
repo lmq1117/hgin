@@ -53,5 +53,41 @@ func main() {
 
 		c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, bindFile.Name, bindFile.Email))
 	})
+
+	router.POST("/api/sport", func(c *gin.Context) {
+		type Sport struct {
+			ID      uint64
+			Title   string
+			Content string
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"code":    "0000",
+			"message": "success",
+			"data": []Sport{
+				{1, "世界杯开赛啦", "世界杯于明晚8点举行开幕式..."},
+				{2, "NBA开赛倒计时5天", "NBA开赛倒计时5天, 万分期待..."},
+				{3, "更多精彩...", "更多科技新闻，请持续关注..."},
+			},
+		})
+	})
+
+	router.POST("/api/tech", func(c *gin.Context) {
+		type Tech struct {
+			ID      uint64
+			Title   string
+			Content string
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code":    "0000",
+			"message": "success",
+			"data": []Tech{
+				{1, "5G时代...", "5G时代的到来，让人工智能飞起来..."},
+				{2, "互联网大洗牌...", "互联网大洗牌, 一个新时代的到来"},
+				{3, "更多精彩...", "更多科技新闻，请持续关注..."},
+			},
+		})
+	})
+
 	router.Run(":8080")
 }
