@@ -20,7 +20,7 @@ type BindFile struct {
 func main() {
 	//currentPath, _ := os.Getwd()
 	router := gin.Default()
-	router.Use(Cors())
+	//router.Use(Cors())
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 
@@ -91,7 +91,48 @@ func main() {
 		})
 	})
 
-	router.Run(":8087")
+	router.POST("/api/user/login", func(c *gin.Context) {
+		username := c.PostForm("username")
+		password := c.PostForm("password")
+		fmt.Println("xxxxxxxxxxxx", username, password)
+		if username == "admin" && password == "123" {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0000",
+				"message": "登录成功",
+				"token":   "admin",
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0001",
+				"message": "登录失败",
+				"token":   "",
+			})
+		}
+	})
+
+	router.POST("/api/user/info/:token", func(c *gin.Context) {
+		token := c.Param("token")
+		type UserInfo struct {
+			ID    uint
+			Name  string
+			Roles []string
+		}
+		if token == "admin" {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0000",
+				"message": "获取用户信息成功",
+				"data":    UserInfo{1, "李雷", []string{"manager", "dev"}},
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0001",
+				"message": "获取用户信息失败",
+				"data":    nil,
+			})
+		}
+	})
+
+	router.Run(":8887")
 }
 
 func Cors() gin.HandlerFunc {
