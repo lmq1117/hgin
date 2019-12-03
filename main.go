@@ -1,29 +1,13 @@
 package main
 
-import (
-	"github.com/gin-contrib/multitemplate"
-	"github.com/gin-gonic/gin"
-)
-
-func createMyRender() multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
-	r.AddFromFiles("index", "simple_templates/base.html", "simple_templates/index.html")
-	r.AddFromFiles("article", "simple_templates/base.html", "simple_templates/index.html", "simple_templates/article.html")
-	return r
-}
+import "github.com/gin-gonic/gin"
 
 func main() {
-	router := gin.Default()
-	router.HTMLRender = createMyRender()
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index", gin.H{
-			"title": "Html5 Template Engine",
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
 		})
 	})
-	router.GET("/article", func(c *gin.Context) {
-		c.HTML(200, "article", gin.H{
-			"title": "Html5 Article Engine",
-		})
-	})
-	router.Run(":8080")
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
