@@ -13,7 +13,7 @@ WRITE_TIMEOUT = 60
 [database]
 TYPE = mysql
 USER = root
-PASSWORD = password
+PASSWORD =
 #127.0.0.1:3306
 HOST = 122.51.104.146:3306
 NAME = blog_dev
