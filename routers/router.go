@@ -2,7 +2,9 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"hgin/middleware/jwt"
 	"hgin/pkg/setting"
+	"hgin/routers/api"
 	"hgin/routers/api/v1"
 )
 
@@ -20,8 +22,10 @@ func InitRouter() *gin.Engine {
 			"message": "test",
 		})
 	})
+	r.GET("/auth", api.GetAuth)
 
 	apiv1 := r.Group("/api/v1")
+	apiv1.Use(jwt.JWT())
 	{
 		apiv1.GET("/tags", v1.GetTags)
 		apiv1.POST("/tags", v1.AddTag)
