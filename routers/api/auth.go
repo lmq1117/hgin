@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"hgin/models"
@@ -28,6 +29,7 @@ func GetAuth(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	yzm := c.PostForm("yzm")
+	fmt.Println(c.PostForm("yzm"))
 
 	valid := validation.Validation{}
 	a := auth{Username: username, Password: password, Yzm: yzm}
