@@ -10,6 +10,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "tags"
+                ],
                 "summary": "新增文章标签",
                 "parameters": [
                     {
@@ -53,6 +56,9 @@
             "put": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "tags"
                 ],
                 "summary": "修改文章标签",
                 "parameters": [
@@ -105,6 +111,9 @@
             "get": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "获取token",
                 "parameters": [

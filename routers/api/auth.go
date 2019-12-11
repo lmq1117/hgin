@@ -16,6 +16,7 @@ type auth struct {
 }
 
 // @Summary 获取token
+// @tags auth
 // @Produce  json
 // @Param username query string true "用户名"
 // @Param password query string true "密码"

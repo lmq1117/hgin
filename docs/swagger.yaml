@@ -31,6 +31,8 @@ paths:
           schema:
             type: string
       summary: 新增文章标签
+      tags:
+      - tags
   /api/v1/tags/{id}:
     put:
       parameters:
@@ -66,6 +68,8 @@ paths:
           schema:
             type: string
       summary: 修改文章标签
+      tags:
+      - tags
   /auth:
     get:
       parameters:
@@ -87,4 +91,6 @@ paths:
           schema:
             type: string
       summary: 获取token
+      tags:
+      - auth
 swagger: "2.0"

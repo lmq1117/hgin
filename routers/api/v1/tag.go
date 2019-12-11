@@ -40,6 +40,7 @@ func GetTags(c *gin.Context) {
 }
 
 // @Summary 新增文章标签
+// @tags tags
 // @Produce  json
 // @Param name query string true "Name"
 // @Param state query int false "State"
@@ -78,6 +79,7 @@ func AddTag(c *gin.Context) {
 }
 
 // @Summary 修改文章标签
+// @tags tags
 // @Produce  json
 // @Param id path int true "ID"
 // @Param name query string true "ID"
