@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/fvbock/endless"
 	"hgin/pkg/setting"
 	"hgin/routers"
-	"net/http"
+	"log"
+	"syscall"
 )
 
 // @title gin blog
@@ -19,16 +21,32 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
-	router := routers.InitRouter()
+	endless.DefaultReadTimeOut = setting.ReadTimeout
+	endless.DefaultWriteTimeOut = setting.WriteTimeout
+	endless.DefaultMaxHeaderBytes = 1 << 20
 
-	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
-		Handler:        router,
-		TLSConfig:      nil,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
-		MaxHeaderBytes: 1 << 20,
+	endPort := fmt.Sprintf(":%d", setting.HTTPPort)
+
+	server := endless.NewServer(endPort, routers.InitRouter())
+	server.BeforeBegin = func(add string) {
+		log.Printf("Actual pid is %d", syscall.Getpid())
 	}
 
-	s.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Printf("server err:%v", err)
+	}
+
+	//router := routers.InitRouter()
+	//
+	//s := &http.Server{
+	//	Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+	//	Handler:        router,
+	//	TLSConfig:      nil,
+	//	ReadTimeout:    setting.ReadTimeout,
+	//	WriteTimeout:   setting.WriteTimeout,
+	//	MaxHeaderBytes: 1 << 20,
+	//}
+	//
+	//s.ListenAndServe()
 }
