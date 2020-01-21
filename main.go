@@ -99,6 +99,23 @@ func main() {
 		}
 	})
 
+	router.POST("/api/user/logout", func(c *gin.Context) {
+		token := c.PostForm("token")
+		if token == "admin" {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0000",
+				"message": "退出成功",
+				"data":    nil,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":    "0001",
+				"message": "退出失败",
+				"data":    nil,
+			})
+		}
+	})
+
 	router.Run(":8887")
 }
 
